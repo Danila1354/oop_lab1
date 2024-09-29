@@ -1,0 +1,3 @@
+/Users/danilapachev/Desktop/projects/_cpp_learning/oop_lab1/cmake-build-debug/CMakeFiles/oop_lab1.dir
+/Users/danilapachev/Desktop/projects/_cpp_learning/oop_lab1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/danilapachev/Desktop/projects/_cpp_learning/oop_lab1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
