@@ -10,11 +10,11 @@ int main() {
     auto &ships = ship_manager.getShips();
     char positions[] = {'h', 'h', 'v'};
     for (int i = 0; i < 3; i++) {
-        field.placeShip(ships[i], ships_coords[i][0], ships_coords[i][1], positions[i], ships);
+        field.placeShip(ships[i], ships_coords[i][0], ships_coords[i][1], positions[i]);
     }
-    field.attackCell(5, 4, ship_manager);
     field.show();
-
+    field.attackCell(5, 4);
+    field.show();
 
     return 0;
 }

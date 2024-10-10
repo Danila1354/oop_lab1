@@ -3,16 +3,14 @@
 
 #include <iostream>
 
-struct Segment {
-    int state;
-    int x;
-    int y;
+enum class SegmentState{
+    FULL, Damaged, Destroyed
 };
 
 class Ship {
 private:
     unsigned short length;
-    std::vector<Segment> segments;
+    std::vector<SegmentState> segments;
     bool is_placed;
 
     void checkSegmentIndex(int index);
@@ -22,21 +20,13 @@ private:
 public:
     Ship(unsigned short length);
 
-    Ship(const Ship &other);
-
-    Ship &operator=(const Ship &other);
-
-    void takeDamage(int x, int y);
-
-    std::vector<std::vector<int>> getShipCoords();
+    void takeDamage(int index);
 
     bool isShipDestroyed();
 
     unsigned short getLength();
 
-    int getSegmentState(int x, int y);
-
-    void setSegmentCoords(int x, int y, int index);
+    SegmentState getSegmentState(int index);
 
     void setPlaced(bool is_placed);
 

@@ -1,36 +1,8 @@
 #include "Cell.h"
 
-Cell::Cell(int x, int y) {
-    this->x = x;
-    this->y = y;
-    is_open = false;
-    status = Status::Empty;
-    pointer_to_ship = nullptr;
-}
+Cell::Cell(int x, int y) : x(x), y(y), is_open(false), status(Status::Empty), pointer_to_ship(nullptr),
+index_of_segment(-1) {}
 
-void Cell::copyCell(const Cell &other) {
-    x = other.x;
-    y = other.y;
-    is_open = other.is_open;
-    status = other.status;
-    if (other.pointer_to_ship != nullptr) {
-        pointer_to_ship = new Ship(*other.pointer_to_ship);
-    } else {
-        pointer_to_ship = nullptr;
-    }
-}
-
-Cell::Cell(const Cell &other) {
-    copyCell(other);
-}
-
-Cell &Cell::operator=(const Cell &other) {
-    if (this != &other) {
-        delete pointer_to_ship;
-        copyCell(other);
-    }
-    return *this;
-}
 
 void Cell::display() {
     if (is_open) {
@@ -41,8 +13,8 @@ void Cell::display() {
                 std::cout << "🔥";
                 return;
             }
-            int segment_state = pointer_to_ship->getSegmentState(x, y);
-            if (segment_state == 1) {
+            SegmentState segment_state = pointer_to_ship->getSegmentState(index_of_segment);
+            if (segment_state == SegmentState::Damaged) {
                 std::cout << u8"\U0001F7E5";
             } else {
                 std::cout << "❌";
@@ -80,3 +52,14 @@ int Cell::getX() {
 int Cell::getY() {
     return y;
 }
+
+
+void Cell::setIndexOfSegment(int index) {
+    index_of_segment = index;
+}
+
+int Cell::getIndexOfSegment() {
+    return index_of_segment;
+}
+
+

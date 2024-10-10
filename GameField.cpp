@@ -62,11 +62,13 @@ GameField &GameField::operator=(GameField &&other) {
 }
 
 
-void GameField::attackCell(int x, int y, ShipManager &ship_manager) {
+void GameField::attackCell(int x, int y) {
     checkCoords(x, y);
     field[y][x].openCell();
     if (field[y][x].getStatus() == Status::Occupied) {
-        ship_manager.reportDamage(x, y);
+        auto pointer_to_ship = field[y][x].getPointerToShip();
+        auto index = field[y][x].getIndexOfSegment();
+        pointer_to_ship->takeDamage(index);
     }
 }
 
@@ -81,45 +83,38 @@ void GameField::show() {
     std::cout << '\n';
 }
 
-void
-GameField::check_collide(std::vector<std::vector<int>> ship_1_coords, std::vector<std::vector<int>> ship_2_coords) {
-    for (auto &ship_1_coord: ship_1_coords) {
-        int x = ship_1_coord[0];
-        int y = ship_1_coord[1];
-        int block_coords[9][2] = {{x - 1, y - 1},
-                                  {x - 1, y},
-                                  {x - 1, y + 1},
-                                  {x,     y - 1},
-                                  {x,     y},
-                                  {x,     y + 1},
-                                  {x + 1, y - 1},
-                                  {x + 1, y},
-                                  {x + 1, y + 1}};
-        for (auto &block_coord: block_coords) {
-            for (auto &ship_2_coord: ship_2_coords) {
-                if (block_coord[0] == ship_2_coord[0] && block_coord[1] == ship_2_coord[1]) {
-                    throw std::invalid_argument("Ships collide");
-                }
+bool GameField::checkCollide(int x, int y) {
+    int row_above = y-1;
+    int row_below = y+1;
+    int left_col = x-1;
+    int right_col = x+1;
+    for (int i = row_above;i<row_below+1;i++){
+        for (int j = left_col;j<right_col+1;j++){
+            if ((j == x && i == y) || (j<0 || i<0 || i>=height || j>=width))
+                continue;
+            else{
+                if (field[i][j].getStatus() == Status::Occupied)
+                    return false;
             }
         }
     }
+    return true;
+
 }
 
 void GameField::setShipCoords(Ship &ship, int x, int y, int ship_length, char position) {
     for (int i = 0; i < ship_length; i++) {
         if (position == 'v') {
-            checkYCoord(y, ship_length);
             field[y + i][x].setStatus(Status::Occupied);
             field[y + i][x].setPointerToShip(&ship);
-            ship.setSegmentCoords(x, y + i, i);
+            field[y+i][x].setIndexOfSegment(i);
             if (!(ship.isPlaced())) {
                 ship.setPlaced(true);
             }
         } else if (position == 'h') {
-            checkXCoord(x, ship_length);
             field[y][x + i].setStatus(Status::Occupied);
             field[y][x + i].setPointerToShip(&ship);
-            ship.setSegmentCoords(x + i, y, i);
+            field[y][x+i].setIndexOfSegment(i);
             if (!(ship.isPlaced())) {
                 ship.setPlaced(true);
             }
@@ -127,22 +122,30 @@ void GameField::setShipCoords(Ship &ship, int x, int y, int ship_length, char po
             throw std::invalid_argument("Invalid position");
         }
     }
+
 }
 
-void GameField::placeShip(Ship &ship, int x, int y, char position, std::vector<Ship> &ships) {
+void GameField::placeShip(Ship &ship, int x, int y, char position) {
     auto ship_length = ship.getLength();
-    if (number_of_deployed_ships != 0) {
-        for (auto &other_ship: ships) {
-            if (&other_ship == &ship || !(other_ship.isPlaced()))
-                continue;
-            auto other_ship_coords = other_ship.getShipCoords();
-            setShipCoords(ship, x, y, ship_length, position);
-            auto ship_coords = ship.getShipCoords();
-            check_collide(ship_coords, other_ship_coords);
+    for (int i = 0; i < ship_length; i++) {
+        if (position == 'v') {
+            checkYCoord(y, ship_length);
+            if (!(checkCollide(x,y+i))){
+                std::cout<<"Ships collide\n";
+                return;
+            }
+        } else if (position == 'h') {
+            checkXCoord(x, ship_length);
+            if (!(checkCollide(x+i,y))){
+                std::cout<<"Ships collide\n";
+                return;
+            }
+
+        } else {
+            throw std::invalid_argument("Invalid position");
         }
     }
-    setShipCoords(ship, x, y, ship_length, position);
-    number_of_deployed_ships++;
+    setShipCoords(ship,x,y,ship_length,position);
 }
 
 int GameField::getWidth() {

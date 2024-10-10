@@ -10,9 +10,3 @@ ShipManager::ShipManager(int number_of_ships, const std::vector<int> &ship_sizes
 std::vector<Ship> &ShipManager::getShips() {
     return ships;
 }
-
-void ShipManager::reportDamage(int x, int y) {
-    for (auto &ship: ships) {
-        ship.takeDamage(x, y);
-    }
-}

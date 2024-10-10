@@ -13,7 +13,6 @@ public:
 
     std::vector<Ship> &getShips();
 
-    void reportDamage(int x, int y);
 
 };
 

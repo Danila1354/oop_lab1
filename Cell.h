@@ -13,16 +13,12 @@ private:
     int y;
     bool is_open;
     Status status;
+    int index_of_segment;
     Ship *pointer_to_ship;
 
-    void copyCell(const Cell &other);
 
 public:
     Cell(int x = 0, int y = 0);
-
-    Cell(const Cell &other);
-
-    Cell &operator=(const Cell &other);
 
     void display();
 
@@ -39,6 +35,10 @@ public:
     int getX();
 
     int getY();
+
+    void setIndexOfSegment(int index);
+
+    int getIndexOfSegment();
 
 };
 

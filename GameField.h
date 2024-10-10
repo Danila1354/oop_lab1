@@ -12,7 +12,7 @@ private:
     int height;
     int number_of_deployed_ships;
 
-    void check_collide(std::vector<std::vector<int>> ship_1_coords, std::vector<std::vector<int>> ship_2_coords);
+    bool checkCollide(int x, int y);
 
     void checkXCoord(int x, int ship_length);
 
@@ -35,11 +35,11 @@ public:
 
     GameField &operator=(GameField &&other);
 
-    void attackCell(int x, int y, ShipManager &ship_manager);
+    void attackCell(int x, int y);
 
     void show();
 
-    void placeShip(Ship &ship, int x, int y, char position, std::vector<Ship> &ships);
+    void placeShip(Ship &ship, int x, int y, char position);
 
     int getWidth();
 
